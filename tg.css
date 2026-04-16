@@ -1,0 +1,143 @@
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background: #0e1621;
+  color: white;
+}
+
+#app {
+  display: flex;
+  height: 100vh;
+}
+
+/* ЧАТ */
+#quiz {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #2a3942;
+}
+
+#answers {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  gap: 6px;
+  height: 80vh;
+  overflow-y: auto;
+
+  scroll-behavior: smooth;
+}
+
+.message {
+  padding: 10px 14px;
+  border-radius: 18px;
+  max-width: 75%;
+  line-height: 1.5;
+  font-size: 14px;
+  word-wrap: break-word;
+  margin: 2px 0;
+}
+
+.bot {
+  align-self: flex-start;
+  background: #182533;
+  color: #e6edf3;
+
+  border-bottom-left-radius: 6px;
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+  border-bottom-right-radius: 18px;
+}
+
+.user {
+  align-self: flex-end;
+  background: #2b5278;
+  color: white;
+  cursor: pointer;
+
+  border-bottom-right-radius: 6px;
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+  border-bottom-left-radius: 18px;
+
+  transition: 0.15s ease;
+}
+
+.user:hover {
+  background: #3a6ea5;
+  transform: translateY(-8px) translateY(5px);
+}
+
+/* SIDEBAR */
+#sidebar {
+  width: 250px;
+  background: #0b141a;
+  border-left: 1px solid #2a3942;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-item {
+  padding: 15px;
+  border-bottom: 1px solid #1f2c33;
+  cursor: pointer;
+}
+
+.chat-item:hover {
+  background: #182533;
+}
+
+.chat-item.active {
+  background: #2b5278;
+}
+
+.chat-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px 12px;
+  margin: 4px 8px;
+
+  border-radius: 14px;
+  cursor: pointer;
+
+  transition: 0.15s ease;
+}
+
+.chat-item:hover {
+  background: #182533;
+}
+
+/* КРУГЛЫЕ АВАТАРКИ */
+.avatar {
+  width: 36px;
+  height: 36px;
+
+  border-radius: 50%;
+  background: #2b5278;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: bold;
+  font-size: 14px;
+
+  color: white;
+
+  /* сглаживание */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}
+
+/* текст справа */
+.chat-text {
+  font-size: 14px;
+  color: white;
+}
+
+/* активный чат */
+.chat-item.active {
+  background: #2b5278;
+}

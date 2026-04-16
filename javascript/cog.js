@@ -1,11 +1,6 @@
-
 import { questions } from "./questions.js";
 
-
 const answers = document.getElementById("answers");
-const result = document.getElementById("result");
-const quiz = document.getElementById("quiz");
-const question = document.getElementById("question");
 
 function shuffle(array) {
   return array.sort(() => Math.random() - 0.5);
@@ -14,35 +9,65 @@ function shuffle(array) {
 let q = shuffle([...questions]);
 let i = 0;
 
+/* Добавить сообщение */
+function addMessage(text, type) {
+  const msg = document.createElement("div");
+  msg.className = "message " + type;
+  msg.textContent = text;
+  answers.appendChild(msg);
+
+  answers.scrollTop = answers.scrollHeight;
+}
+
+/* Показать вопрос */
 function show() {
-  question.textContent = q[i].text;
-  answers.innerHTML = "";
-  result.textContent = "";
+  addMessage(q[i].text, "bot");
 
   q[i].answers.forEach((a, j) => {
-    const btn = document.createElement("button");
+    const btn = document.createElement("div");
+    btn.className = "message user";
     btn.textContent = a;
-    btn.onclick = () => check(j);
+
+    btn.onclick = () => check(j, a);
+
     answers.appendChild(btn);
-    answers.appendChild(document.createElement("br"));
   });
 }
 
-function check(a) {
-  result.textContent =
-    a === q[i].correct ? "✅ Правильно!" : "❌ Неправильно!";
+/* Проверка */
+function check(index, text) {
+  const correct = index === q[i].correct;
+
+  // блокируем клики
+  const all = document.querySelectorAll(".user");
+  all.forEach(b => b.style.pointerEvents = "none");
+
+  // подсветка выбранного
+  all.forEach(b => {
+    if (b.textContent !== text) b.style.opacity = "0.5";
+  });
+
+  setTimeout(() => {
+    addMessage(
+      correct ? "✅ Правильно!" : "❌ Неправильно!",
+      "bot"
+    );
+
+    // 👉 авто следующий вопрос
+    setTimeout(() => nextQuestion(), 800);
+
+  }, 400);
 }
 
+/* Следующий вопрос */
 function nextQuestion() {
   i++;
+
   if (i < q.length) {
     show();
   } else {
-    quiz.innerHTML = "<h2>🎉 Викторина завершена</h2>";
+    addMessage("🎉 Викторина завершена", "bot");
   }
 }
-
-window.check = check;
-window.nextQuestion = nextQuestion;
 
 show();
