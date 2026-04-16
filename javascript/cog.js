@@ -9,7 +9,7 @@ function shuffle(array) {
 let q = shuffle([...questions]);
 let i = 0;
 
-/* Добавить сообщение */
+
 function addMessage(text, type) {
   const msg = document.createElement("div");
   msg.className = "message " + type;
@@ -19,7 +19,7 @@ function addMessage(text, type) {
   answers.scrollTop = answers.scrollHeight;
 }
 
-/* Показать вопрос */
+
 function show() {
   addMessage(q[i].text, "bot");
 
@@ -34,15 +34,15 @@ function show() {
   });
 }
 
-/* Проверка */
+
 function check(index, text) {
   const correct = index === q[i].correct;
 
-  // блокируем клики
+
   const all = document.querySelectorAll(".user");
   all.forEach(b => b.style.pointerEvents = "none");
 
-  // подсветка выбранного
+
   all.forEach(b => {
     if (b.textContent !== text) b.style.opacity = "0.5";
   });
@@ -53,13 +53,13 @@ function check(index, text) {
       "bot"
     );
 
-    // 👉 авто следующий вопрос
+
     setTimeout(() => nextQuestion(), 800);
 
   }, 400);
 }
 
-/* Следующий вопрос */
+
 function nextQuestion() {
   i++;
 
