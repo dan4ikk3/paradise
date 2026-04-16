@@ -1,9 +1,19 @@
 body {
     background-color: rgb(255, 255, 255);
-
+    font-family: sans-serif;
 }
 
 #headsite {
+    text-align: center;
+}
 
-    background-image: url(chrome://global/skin/icons/edit-outline.svg);
+#info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    white-space: nowrap;
+    font-size: 40px;
+    gap: 26px;
+    width: 300px;
+    margin: 30px auto;
 }
