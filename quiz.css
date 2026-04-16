@@ -1,0 +1,37 @@
+#answers {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 0.20rem solid #000000b5;
+}
+
+
+  button {
+    padding: 30px;
+  }
+
+#question {
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  white-space: nowrap;
+  font-size: 40px;
+}
+
+#result {
+
+  height: 100px;
+  line-height: 100px;
+  text-align: center;
+  background-color: rgb(200, 195, 189);
+  transform: scale(1.03);
+
+}
+
+body {
+
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+}
+
