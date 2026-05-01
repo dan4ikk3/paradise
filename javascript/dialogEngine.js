@@ -4,6 +4,7 @@ let currentScenario = null;
 let currentNode = "start";
 
 let usedScenarios = [];
+let activeSession = 0;
 
 function delay(ms) {
   return new Promise(res => setTimeout(res, ms));
@@ -26,34 +27,40 @@ function typing(answers) {
   return el;
 }
 
-async function show(addMessage, answers, options, getSession) {
-  if (!currentScenario) return;
+function getRandomScenario() {
+  const keys = Object.keys(scenarios);
 
-  const node = currentScenario[currentNode];
+  if (usedScenarios.length >= keys.length) {
+    usedScenarios = [];
+  }
+
+  const available = keys.filter(k => !usedScenarios.includes(k));
+  const key = available[Math.floor(Math.random() * available.length)];
+
+  usedScenarios.push(key);
+  return key;
+}
+
+async function show(addMessage, answers, options, getSession) {
   const session = getSession?.();
+  const node = currentScenario[currentNode];
 
   const type = node.from === "friend" ? "bot" : "correct-msg";
 
   if (node.messages) {
     for (const msg of node.messages) {
-      if (getSession && session !== getSession()) return;
+      if (session !== getSession?.()) return;
 
       const t = typing(answers);
-
       await delay(500);
 
-      if (getSession && session !== getSession()) return;
+      if (session !== getSession?.()) return;
 
       t.remove();
       addMessage(msg, type);
 
       await delay(getDelay(msg));
     }
-  } else {
-    const t = typing(answers);
-    await delay(700);
-    if (t) t.remove();
-    addMessage(node.text, type);
   }
 
   options.innerHTML = "";
@@ -86,34 +93,17 @@ async function show(addMessage, answers, options, getSession) {
       setTimeout(() => {
         currentNode = opt.next;
         show(addMessage, answers, options, getSession);
-      }, 500);
+      }, 300);
     };
 
     options.appendChild(btn);
   });
 }
 
-function getRandomScenario() {
-  const keys = Object.keys(scenarios);
-
-  if (usedScenarios.length >= keys.length) {
-    usedScenarios = [];
-  }
-
-  const available = keys.filter(k => !usedScenarios.includes(k));
-
-  const randomKey =
-    available[Math.floor(Math.random() * available.length)];
-
-  usedScenarios.push(randomKey);
-
-  return randomKey;
-}
-
 export function startDialog(addMessage, answers, options, getSession) {
-  const random = getRandomScenario();
+  activeSession++;
 
-  currentScenario = scenarios[random];
+  currentScenario = scenarios[getRandomScenario()];
   currentNode = "start";
 
   answers.innerHTML = "";
