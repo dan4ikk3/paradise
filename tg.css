@@ -387,13 +387,12 @@ body {
 }
 
 
-#sidebar .chat-item:nth-child(3),
 #sidebar .chat-item:nth-child(4) {
   position: relative;
 }
 
 
-#sidebar .chat-item:nth-child(3),
+
 #sidebar .chat-item:nth-child(4) {
   background-image:
     linear-gradient(#9fb3c8, #9fb3c8), /* линия */
