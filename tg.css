@@ -386,13 +386,13 @@ body {
   }
 }
 
-/* помечаем muted чаты */
+
 #sidebar .chat-item:nth-child(3),
 #sidebar .chat-item:nth-child(4) {
   position: relative;
 }
 
-/* рисуем иконку через background */
+
 #sidebar .chat-item:nth-child(3),
 #sidebar .chat-item:nth-child(4) {
   background-image:
