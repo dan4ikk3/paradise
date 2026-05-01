@@ -110,9 +110,9 @@ h2 {
 input {
 
   width: 100%;
-  height: 42px; /* фиксирует ровную высоту */
+  height: 42px; 
 
-  padding: 0 12px; /* убираем вертикальный padding */
+  padding: 0 12px; 
 
   margin-bottom: 10px;
 

@@ -1,5 +1,6 @@
 import { questions } from "./questions.js";
 import { startDialog } from "./dialogEngine.js";
+import { startWorkDialog } from "./workDialog.js";
 
 const answers = document.getElementById("answers");
 const options = document.getElementById("options");
@@ -25,6 +26,13 @@ function addMessage(text, type = "bot") {
   let finalType = type;
 
   if (mode === "dialog") {
+    if (type === "user") finalType = "user";
+    else if (type === "good-end") finalType = "system success";
+    else if (type === "bad-end") finalType = "system fail";
+    else finalType = "bot";
+  }
+
+  if (mode === "work") {
     if (type === "user") finalType = "user";
     else if (type === "good-end") finalType = "system success";
     else if (type === "bad-end") finalType = "system fail";
@@ -103,7 +111,6 @@ function check(btn, selected, current) {
     if (current.explanation) {
       setTimeout(() => {
         if (currentSession !== sessionId || mode !== "quiz") return;
-
         addMessage("💡 " + current.explanation, "explanation");
       }, 300);
     }
@@ -152,36 +159,12 @@ chats.forEach(chat => {
       mode = "dialog";
       startDialog(addMessage, answers, options, () => sessionId);
     }
+
+    if (text.includes("Работа")) {
+      mode = "work";
+      startWorkDialog(addMessage, answers, options, () => sessionId);
+    }
   });
 });
-
-// копия всех ключей сценариев
-let availableScenarios = Object.keys(scenarios);
-
-/**
- * Получить случайный сценарий без повторов
- */
-export function getRandomScenario() {
-  // если закончились — перезапускаем пул
-  if (availableScenarios.length === 0) {
-    availableScenarios = Object.keys(scenarios);
-  }
-
-  // случайный индекс
-  const index = Math.floor(Math.random() * availableScenarios.length);
-
-  // ключ сценария
-  const key = availableScenarios[index];
-
-  // удаляем чтобы не повторялся
-  availableScenarios.splice(index, 1);
-
-  // возвращаем сценарий
-  return {
-    key,
-    scenario: scenarios[key],
-    remaining: availableScenarios.length
-  };
-}
 
 show();
