@@ -1,73 +1,187 @@
 import { questions } from "./questions.js";
+import { startDialog } from "./dialogEngine.js";
 
 const answers = document.getElementById("answers");
-
-function shuffle(array) {
-  return array.sort(() => Math.random() - 0.5);
-}
+const options = document.getElementById("options");
 
 let q = shuffle([...questions]);
 let i = 0;
 
+let mode = "quiz";
+let sessionId = 0;
 
-function addMessage(text, type) {
-  const msg = document.createElement("div");
-  msg.className = "message " + type;
-  msg.textContent = text;
-  answers.appendChild(msg);
-
-  answers.scrollTop = answers.scrollHeight;
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
 }
 
+function addMessage(text, type = "bot") {
+  const msg = document.createElement("div");
+
+  let finalType = type;
+
+  if (mode === "dialog") {
+    if (type === "user") finalType = "user";
+    else if (type === "good-end") finalType = "system success";
+    else if (type === "bad-end") finalType = "system fail";
+    else finalType = "bot";
+  }
+
+  if (mode === "quiz") {
+    if (type === "correct-msg") finalType = "correct-msg";
+    else if (type === "wrong-msg") finalType = "wrong-msg";
+    else if (type === "user") finalType = "user";
+    else finalType = "bot";
+  }
+
+  msg.className = "message " + finalType;
+  msg.textContent = text;
+
+  msg.style.opacity = "0";
+  msg.style.transform = "translateY(8px)";
+
+  answers.appendChild(msg);
+  answers.scrollTop = answers.scrollHeight;
+
+  requestAnimationFrame(() => {
+    msg.style.transition = "0.25s ease";
+    msg.style.opacity = "1";
+    msg.style.transform = "translateY(0)";
+  });
+}
 
 function show() {
-  addMessage(q[i].text, "bot");
+  const current = q[i];
+  addMessage(current.text, "bot");
 
-  q[i].answers.forEach((a, j) => {
+  options.innerHTML = "";
+
+  const shuffled = shuffle(current.answers);
+
+  shuffled.forEach(ans => {
     const btn = document.createElement("div");
-    btn.className = "message user";
-    btn.textContent = a;
+    btn.className = "option";
+    btn.textContent = ans;
 
-    btn.onclick = () => check(j, a);
+    btn.onclick = () => check(btn, ans, current);
 
-    answers.appendChild(btn);
+    options.appendChild(btn);
   });
 }
 
+function check(btn, selected, current) {
+  const correct = selected === current.correctText;
 
-function check(index, text) {
-  const correct = index === q[i].correct;
+  addMessage(selected, "user");
 
-
-  const all = document.querySelectorAll(".user");
-  all.forEach(b => b.style.pointerEvents = "none");
-
-
-  all.forEach(b => {
-    if (b.textContent !== text) b.style.opacity = "0.5";
+  document.querySelectorAll(".option").forEach(b => {
+    b.style.pointerEvents = "none";
   });
+
+  document.querySelectorAll(".option").forEach(b => {
+    if (b.textContent === current.correctText) {
+      b.classList.add("correct");
+    }
+  });
+
+  if (!correct) btn.classList.add("wrong");
+
+  const currentSession = sessionId;
 
   setTimeout(() => {
+    if (currentSession !== sessionId || mode !== "quiz") return;
+
     addMessage(
-      correct ? "✅ Правильно!" : "❌ Неправильно!",
-      "bot"
+      correct ? "Правильно!" : "Неправильно!",
+      correct ? "correct-msg" : "wrong-msg"
     );
 
+    if (current.explanation) {
+      setTimeout(() => {
+        if (currentSession !== sessionId || mode !== "quiz") return;
 
-    setTimeout(() => nextQuestion(), 800);
+        addMessage("💡 " + current.explanation, "explanation");
+      }, 300);
+    }
 
-  }, 400);
+    setTimeout(() => {
+      if (currentSession !== sessionId || mode !== "quiz") return;
+      next();
+    }, 1600);
+
+  }, 500);
 }
 
-
-function nextQuestion() {
+function next() {
   i++;
 
   if (i < q.length) {
     show();
   } else {
-    addMessage("🎉 Викторина завершена", "bot");
+    addMessage("Викторина завершена", "correct-msg");
+    options.innerHTML = "";
   }
+}
+
+const chats = document.querySelectorAll(".chat-item");
+
+chats.forEach(chat => {
+  chat.addEventListener("click", () => {
+    chats.forEach(c => c.classList.remove("active"));
+    chat.classList.add("active");
+
+    const text = chat.innerText;
+
+    sessionId++;
+
+    answers.innerHTML = "";
+    options.innerHTML = "";
+
+    if (text.includes("Викторина")) {
+      mode = "quiz";
+      i = 0;
+      q = shuffle([...questions]);
+      show();
+    }
+
+    if (text.includes("Друзья")) {
+      mode = "dialog";
+      startDialog(addMessage, answers, options, () => sessionId);
+    }
+  });
+});
+
+// копия всех ключей сценариев
+let availableScenarios = Object.keys(scenarios);
+
+/**
+ * Получить случайный сценарий без повторов
+ */
+export function getRandomScenario() {
+  // если закончились — перезапускаем пул
+  if (availableScenarios.length === 0) {
+    availableScenarios = Object.keys(scenarios);
+  }
+
+  // случайный индекс
+  const index = Math.floor(Math.random() * availableScenarios.length);
+
+  // ключ сценария
+  const key = availableScenarios[index];
+
+  // удаляем чтобы не повторялся
+  availableScenarios.splice(index, 1);
+
+  // возвращаем сценарий
+  return {
+    key,
+    scenario: scenarios[key],
+    remaining: availableScenarios.length
+  };
 }
 
 show();
